@@ -1,0 +1,69 @@
+[
+  {
+    "feature": "choose",
+    "caption": "Choose a CSV from the current vault.",
+    "note": "Start here.md",
+    "eval": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.signOut(); p.chooseCsv(); return 'ok'; })()",
+    "wait": 500,
+    "after": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.signOut(); return 'ok'; })()"
+  },
+  {
+    "feature": "preview",
+    "caption": "Control characters and full-width prefixes are selected.",
+    "note": "Start here.md",
+    "eval": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.signOut(); p.settings.retainNegativeNumbers = false;  await p.preview(app.vault.getAbstractFileByPath('CSV Formula Shield/Prefixes.csv'));  return 'ok'; })()",
+    "wait": 500,
+    "after": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.signOut(); return 'ok'; })()"
+  },
+  {
+    "feature": "numbers",
+    "caption": "Retain strict negative numbers and keep expressions selected.",
+    "note": "Start here.md",
+    "eval": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.signOut(); p.settings.retainNegativeNumbers = false; p.settings.retainNegativeNumbers = true; await p.preview(app.vault.getAbstractFileByPath('CSV Formula Shield/People.csv'));  return 'ok'; })()",
+    "wait": 500,
+    "after": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.signOut(); return 'ok'; })()"
+  },
+  {
+    "feature": "copy",
+    "caption": "A numbered output name keeps an existing copy.",
+    "note": "Start here.md",
+    "eval": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.signOut(); p.settings.retainNegativeNumbers = false;  await p.preview(app.vault.getAbstractFileByPath('CSV Formula Shield/Collision.csv'));  return 'ok'; })()",
+    "wait": 500,
+    "after": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.signOut(); return 'ok'; })()"
+  },
+  {
+    "feature": "policy",
+    "caption": "A saved source policy sets the preview choice.",
+    "note": "Start here.md",
+    "eval": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('csv-formula-shield-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await p.savePolicy('CSV Formula Shield/People.csv', { retainNegativeNumbers: true }); await p.preview(app.vault.getAbstractFileByPath('CSV Formula Shield/People.csv'));  return 'ok'; })()",
+    "wait": 500,
+    "after": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.signOut(); return 'ok'; })()"
+  },
+  {
+    "feature": "report",
+    "caption": "The combined report summary includes a row-width error.",
+    "note": "Start here.md",
+    "eval": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('csv-formula-shield-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); p.chooseBatch(); const paths = ['CSV Formula Shield/People.csv','CSV Formula Shield/Broken.csv']; for (const path of paths) { const row = [...document.querySelectorAll('.csv-shield-modal .setting-item')].find(s => s.querySelector('.setting-item-name')?.textContent === path); row.querySelector('.checkbox-container').click(); } [...document.querySelectorAll('.csv-shield-modal button')].find(b => b.textContent === 'Audit selected files').click(); for (let i = 0; i < 100; i++) { if ([...document.querySelectorAll('.csv-shield-modal button')].some(b => b.textContent === 'Write combined report')) break; await new Promise(r => setTimeout(r, 50)); } if (![...document.querySelectorAll('.csv-shield-modal button')].some(b => b.textContent === 'Write combined report')) throw new Error('Report preview missing');  return 'ok'; })()",
+    "wait": 500,
+    "after": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.signOut(); return 'ok'; })()"
+  },
+  {
+    "feature": "workflow",
+    "caption": "Choose a CSV, review prefixes, and retain strict negative numbers.",
+    "frames": [
+      {
+        "note": "Start here.md",
+        "eval": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.signOut(); p.chooseCsv(); return 'ok'; })()",
+        "hold": 1400
+      },
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.signOut(); p.settings.retainNegativeNumbers = false;  await p.preview(app.vault.getAbstractFileByPath('CSV Formula Shield/People.csv'));  return 'ok'; })()",
+        "hold": 1800
+      },
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['csv-formula-shield']; for (const d of [...p.dialogs]) d.close(); p.pro.signOut(); p.settings.retainNegativeNumbers = false; p.settings.retainNegativeNumbers = true; await p.preview(app.vault.getAbstractFileByPath('CSV Formula Shield/People.csv'));  return 'ok'; })()",
+        "hold": 1800
+      }
+    ]
+  }
+]

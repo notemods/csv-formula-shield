@@ -1,0 +1,8 @@
+"name","value","context"
+"Ada","=1+1","Formula text"
+"Bea","-12","Negative integer"
+"Cy","-1+2","Expression"
+"Dee","@SUM(A1)","At prefix"
+"a,b","line one
+line two","Quoted text"
+"Eli","'=2","Existing apostrophe"

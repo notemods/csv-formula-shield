@@ -1,0 +1,831 @@
+{
+ "slug": "csv-formula-shield",
+ "module": "tests/scenarios",
+ "function": "runAcceptanceCase",
+ "note": "The test adapter runs the parser, writer, output-name function, or preview cancellation. Errors use stable category names. Row 1 is the header.",
+ "cases": [
+  {
+   "name": "body equals",
+   "args": [
+    {
+     "csv": "name,value\nAda,=1+1",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "name",
+      "value"
+     ],
+     [
+      "Ada",
+      "=1+1"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 2,
+      "header": "value",
+      "before": "=1+1",
+      "after": "'=1+1"
+     }
+    ],
+    "output": "\"name\",\"value\"\r\n\"Ada\",\"'=1+1\""
+   }
+  },
+  {
+   "name": "formula header",
+   "args": [
+    {
+     "csv": "=name,value\nAda,2",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "=name",
+      "value"
+     ],
+     [
+      "Ada",
+      "2"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 1,
+      "column": 1,
+      "header": "=name",
+      "before": "=name",
+      "after": "'=name"
+     }
+    ],
+    "output": "\"'=name\",\"value\"\r\n\"Ada\",\"2\""
+   }
+  },
+  {
+   "name": "retain negative integer but escape expression",
+   "args": [
+    {
+     "csv": "value\n-12\n-1+2",
+     "retain": true
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "-12"
+     ],
+     [
+      "-1+2"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 3,
+      "column": 1,
+      "header": "value",
+      "before": "-1+2",
+      "after": "'-1+2"
+     }
+    ],
+    "output": "\"value\"\r\n\"-12\"\r\n\"'-1+2\""
+   }
+  },
+  {
+   "name": "escape negative integer by default",
+   "args": [
+    {
+     "csv": "value\n-12",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "-12"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 1,
+      "header": "value",
+      "before": "-12",
+      "after": "'-12"
+     }
+    ],
+    "output": "\"value\"\r\n\"'-12\""
+   }
+  },
+  {
+   "name": "quoted comma and multiline",
+   "args": [
+    {
+     "csv": "name,value\n\"a,b\",\"line one\nline two\"",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "name",
+      "value"
+     ],
+     [
+      "a,b",
+      "line one\nline two"
+     ]
+    ],
+    "findings": [],
+    "output": "\"name\",\"value\"\r\n\"a,b\",\"line one\nline two\""
+   }
+  },
+  {
+   "name": "tab prefix",
+   "args": [
+    {
+     "csv": "value\n\"\tSUM(A1)\"",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "\tSUM(A1)"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 1,
+      "header": "value",
+      "before": "\tSUM(A1)",
+      "after": "'\tSUM(A1)"
+     }
+    ],
+    "output": "\"value\"\r\n\"'\tSUM(A1)\""
+   }
+  },
+  {
+   "name": "carriage return prefix",
+   "args": [
+    {
+     "csv": "value\r\n\"\r=1\"",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "\r=1"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 1,
+      "header": "value",
+      "before": "\r=1",
+      "after": "'\r=1"
+     }
+    ],
+    "output": "\"value\"\r\n\"'\r=1\""
+   }
+  },
+  {
+   "name": "line feed prefix",
+   "args": [
+    {
+     "csv": "value\n\"\n=1\"",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "\n=1"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 1,
+      "header": "value",
+      "before": "\n=1",
+      "after": "'\n=1"
+     }
+    ],
+    "output": "\"value\"\r\n\"'\n=1\""
+   }
+  },
+  {
+   "name": "full width equals",
+   "args": [
+    {
+     "csv": "value\n＝1+1",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "＝1+1"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 1,
+      "header": "value",
+      "before": "＝1+1",
+      "after": "'＝1+1"
+     }
+    ],
+    "output": "\"value\"\r\n\"'＝1+1\""
+   }
+  },
+  {
+   "name": "embedded quote and semicolon",
+   "args": [
+    {
+     "csv": "value\n\"=1+2\"\";=1+2\"",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "=1+2\";=1+2"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 1,
+      "header": "value",
+      "before": "=1+2\";=1+2",
+      "after": "'=1+2\";=1+2"
+     }
+    ],
+    "output": "\"value\"\r\n\"'=1+2\"\";=1+2\""
+   }
+  },
+  {
+   "name": "apostrophe already present",
+   "args": [
+    {
+     "csv": "value\n'=1+1",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "'=1+1"
+     ]
+    ],
+    "findings": [],
+    "output": "\"value\"\r\n\"'=1+1\""
+   }
+  },
+  {
+   "name": "BOM",
+   "args": [
+    {
+     "csv": "﻿name,value\nAda,+1",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "name",
+      "value"
+     ],
+     [
+      "Ada",
+      "+1"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 2,
+      "header": "value",
+      "before": "+1",
+      "after": "'+1"
+     }
+    ],
+    "output": "\"name\",\"value\"\r\n\"Ada\",\"'+1\""
+   }
+  },
+  {
+   "name": "at prefix",
+   "args": [
+    {
+     "csv": "value\n@SUM(A1)",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "@SUM(A1)"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 1,
+      "header": "value",
+      "before": "@SUM(A1)",
+      "after": "'@SUM(A1)"
+     }
+    ],
+    "output": "\"value\"\r\n\"'@SUM(A1)\""
+   }
+  },
+  {
+   "name": "plus prefix",
+   "args": [
+    {
+     "csv": "value\n+2",
+     "retain": true
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "+2"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 1,
+      "header": "value",
+      "before": "+2",
+      "after": "'+2"
+     }
+    ],
+    "output": "\"value\"\r\n\"'+2\""
+   }
+  },
+  {
+   "name": "full width plus",
+   "args": [
+    {
+     "csv": "value\n＋2",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "＋2"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 1,
+      "header": "value",
+      "before": "＋2",
+      "after": "'＋2"
+     }
+    ],
+    "output": "\"value\"\r\n\"'＋2\""
+   }
+  },
+  {
+   "name": "full width minus",
+   "args": [
+    {
+     "csv": "value\n－12",
+     "retain": true
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "－12"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 1,
+      "header": "value",
+      "before": "－12",
+      "after": "'－12"
+     }
+    ],
+    "output": "\"value\"\r\n\"'－12\""
+   }
+  },
+  {
+   "name": "full width at",
+   "args": [
+    {
+     "csv": "value\n＠SUM(A1)",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "＠SUM(A1)"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 1,
+      "header": "value",
+      "before": "＠SUM(A1)",
+      "after": "'＠SUM(A1)"
+     }
+    ],
+    "output": "\"value\"\r\n\"'＠SUM(A1)\""
+   }
+  },
+  {
+   "name": "negative decimal and exponent",
+   "args": [
+    {
+     "csv": "value\n-0.5\n-2e3\n-2E-3",
+     "retain": true
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "-0.5"
+     ],
+     [
+      "-2e3"
+     ],
+     [
+      "-2E-3"
+     ]
+    ],
+    "findings": [],
+    "output": "\"value\"\r\n\"-0.5\"\r\n\"-2e3\"\r\n\"-2E-3\""
+   }
+  },
+  {
+   "name": "negative noncanonical numbers",
+   "args": [
+    {
+     "csv": "value\n-01\n-.5\n-1.\n-Infinity\n-1e",
+     "retain": true
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "-01"
+     ],
+     [
+      "-.5"
+     ],
+     [
+      "-1."
+     ],
+     [
+      "-Infinity"
+     ],
+     [
+      "-1e"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 1,
+      "header": "value",
+      "before": "-01",
+      "after": "'-01"
+     },
+     {
+      "row": 3,
+      "column": 1,
+      "header": "value",
+      "before": "-.5",
+      "after": "'-.5"
+     },
+     {
+      "row": 4,
+      "column": 1,
+      "header": "value",
+      "before": "-1.",
+      "after": "'-1."
+     },
+     {
+      "row": 5,
+      "column": 1,
+      "header": "value",
+      "before": "-Infinity",
+      "after": "'-Infinity"
+     },
+     {
+      "row": 6,
+      "column": 1,
+      "header": "value",
+      "before": "-1e",
+      "after": "'-1e"
+     }
+    ],
+    "output": "\"value\"\r\n\"'-01\"\r\n\"'-.5\"\r\n\"'-1.\"\r\n\"'-Infinity\"\r\n\"'-1e\""
+   }
+  },
+  {
+   "name": "original first character only",
+   "args": [
+    {
+     "csv": "value\n =1+1\nhello=1",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      " =1+1"
+     ],
+     [
+      "hello=1"
+     ]
+    ],
+    "findings": [],
+    "output": "\"value\"\r\n\" =1+1\"\r\n\"hello=1\""
+   }
+  },
+  {
+   "name": "blank cells and trailing newline",
+   "args": [
+    {
+     "csv": "a,b\n,\n",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a",
+      "b"
+     ],
+     [
+      "",
+      ""
+     ]
+    ],
+    "findings": [],
+    "output": "\"a\",\"b\"\r\n\"\",\"\""
+   }
+  },
+  {
+   "name": "logical row after multiline",
+   "args": [
+    {
+     "csv": "a,b\n\"two\nlines\",safe\nx,=2",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a",
+      "b"
+     ],
+     [
+      "two\nlines",
+      "safe"
+     ],
+     [
+      "x",
+      "=2"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 3,
+      "column": 2,
+      "header": "b",
+      "before": "=2",
+      "after": "'=2"
+     }
+    ],
+    "output": "\"a\",\"b\"\r\n\"two\nlines\",\"safe\"\r\n\"x\",\"'=2\""
+   }
+  },
+  {
+   "name": "CRLF records",
+   "args": [
+    {
+     "csv": "a,b\r\nx,=2\r\n",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a",
+      "b"
+     ],
+     [
+      "x",
+      "=2"
+     ]
+    ],
+    "findings": [
+     {
+      "row": 2,
+      "column": 2,
+      "header": "b",
+      "before": "=2",
+      "after": "'=2"
+     }
+    ],
+    "output": "\"a\",\"b\"\r\n\"x\",\"'=2\""
+   }
+  },
+  {
+   "name": "HTML is text",
+   "args": [
+    {
+     "csv": "value\n<img src=x>",
+     "retain": false
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "value"
+     ],
+     [
+      "<img src=x>"
+     ]
+    ],
+    "findings": [],
+    "output": "\"value\"\r\n\"<img src=x>\""
+   }
+  },
+  {
+   "name": "unclosed quote",
+   "args": [
+    {
+     "csv": "a,b\nx,\"oops"
+    }
+   ],
+   "expected": {
+    "error": "parse"
+   }
+  },
+  {
+   "name": "inconsistent width",
+   "args": [
+    {
+     "csv": "a,b\nx"
+    }
+   ],
+   "expected": {
+    "error": "width"
+   }
+  },
+  {
+   "name": "empty source",
+   "args": [
+    {
+     "csv": ""
+    }
+   ],
+   "expected": {
+    "error": "empty"
+   }
+  },
+  {
+   "name": "NUL input",
+   "args": [
+    {
+     "csv": "a\n\u0000"
+    }
+   ],
+   "expected": {
+    "error": "encoding"
+   }
+  },
+  {
+   "name": "replacement character",
+   "args": [
+    {
+     "csv": "a\n�"
+    }
+   ],
+   "expected": {
+    "error": "encoding"
+   }
+  },
+  {
+   "name": "existing destination chooses numbered copy",
+   "args": [
+    {
+     "action": "name",
+     "source": "data.csv",
+     "existing": [
+      "data.csv",
+      "data.escaped.csv"
+     ]
+    }
+   ],
+   "expected": "data.escaped 2.csv"
+  },
+  {
+   "name": "several existing destinations",
+   "args": [
+    {
+     "action": "name",
+     "source": "folder/data.CSV",
+     "existing": [
+      "folder/data.escaped.csv",
+      "folder/data.escaped 2.csv"
+     ]
+    }
+   ],
+   "expected": "folder/data.escaped 3.csv"
+  },
+  {
+   "name": "over 1 MiB",
+   "args": [
+    {
+     "action": "oversize"
+    }
+   ],
+   "expected": {
+    "error": "size"
+   }
+  },
+  {
+   "name": "cancel preview writes no file",
+   "args": [
+    {
+     "action": "cancel"
+    }
+   ],
+   "expected": [
+    "data.csv"
+   ]
+  }
+ ]
+}

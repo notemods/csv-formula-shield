@@ -1,0 +1,46 @@
+.csv-shield-modal {
+  width: min(960px, 94vw);
+}
+
+.csv-shield-source {
+  font-family: var(--font-monospace);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.csv-shield-warning {
+  padding: var(--size-4-3);
+  border-left: 3px solid var(--text-warning);
+  background: var(--background-secondary);
+}
+
+.csv-shield-count {
+  font-weight: var(--font-semibold);
+  color: var(--text-accent);
+}
+
+.csv-shield-table-wrap {
+  max-height: 34vh;
+  overflow: auto;
+  margin-bottom: var(--size-4-3);
+}
+
+.csv-shield-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-ui-small);
+}
+
+.csv-shield-table th,
+.csv-shield-table td {
+  text-align: left;
+  padding: var(--size-4-2);
+  border-bottom: 1px solid var(--background-modifier-border);
+  overflow-wrap: anywhere;
+}
+
+.csv-shield-table th {
+  position: sticky;
+  top: 0;
+  background: var(--background-primary);
+}
