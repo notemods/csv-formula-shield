@@ -1,7 +1,6 @@
 {
 	"name": "csv-formula-shield",
-	"repository": {"type": "git", "url": "theluckystrike/csv-formula-shield.git"},
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"private": true,
 	"description": "Find formula prefixes in CSV cells and write a separate escaped copy.",
 	"main": "main.js",

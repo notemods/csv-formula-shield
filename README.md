@@ -58,6 +58,8 @@ The fixed prefix set is equals, plus, minus, at, tab, carriage return, line feed
 
 ## Settings
 
+After a minor or major update, this plugin opens one What's new tab in the background. The tab and settings card suggest other NoteMods plugins and Zovo Chat and link to notemods.com for feedback ([privacy](https://notemods.com/privacy/)). The tab sends no data. Turn the tab off in Settings.
+
 Retain strict negative numbers sets the default for new previews. The preview toggle changes only the current operation until you save a source policy. The Pro section provides the sponsorship link, GitHub sign-in, refresh, and sign-out controls. The free check and copy command needs no sign-in.
 
 ## FAQ

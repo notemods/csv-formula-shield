@@ -2,8 +2,10 @@ import { FuzzySuggestModal, Modal, Notice, Plugin, Setting, TFile, normalizePath
 import { createGitHubSponsors } from './license/github-obsidian';
 import type { SponsorsManager } from './license/index';
 import { auditCsv, copyName, MAX_BYTES, PREVIEW_LIMIT, previewText, type Audit, type Policy } from './csv';
-import { bindPro, isPro, resetPro, SPONSORS } from './pro';
+import { bindPro, isPro, proNotice, resetPro, SPONSORS } from './pro';
 import { DEFAULT_SETTINGS, normalizeSettings, ShieldSettingTab, type ShieldSettings } from './settings';
+import { setupHello } from './hello/index';
+import WHATS_NEW from './whats-new.json';
 
 // Keep the paid tier name in the same form on commands and dialogs.
 function proLabel(text: string): string { return text + ' (Pro)'; }
@@ -46,6 +48,8 @@ export default class CsvFormulaShieldPlugin extends Plugin {
 	private stopped = false;
 
 	async onload(): Promise<void> {
+		// First: "What's new" reads its state before the settings load (packages/hello). It does not wait.
+		setupHello(this, WHATS_NEW);
 		await this.loadSettings();
 		this.pro = createGitHubSponsors(this.app, this.manifest.id, SPONSORS, this);
 		this.pro.init();
@@ -79,7 +83,7 @@ export default class CsvFormulaShieldPlugin extends Plugin {
 	forget(dialog: Modal): void { this.dialogs.delete(dialog); }
 	needsPro(): boolean {
 		if (isPro()) return true;
-		new Notice('Open the plugin settings to use this paid feature. Sign in with GitHub to check your sponsorship.');
+		proNotice('Combined audit reports and saved export policies are Pro features.');
 		return false;
 	}
 	chooseCsv(): void {

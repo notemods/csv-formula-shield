@@ -1,0 +1,27 @@
+{
+	"id": "csv-formula-shield",
+	"name": "CSV Formula Shield",
+	"version": "1.0.1",
+	"changes": [
+		"The Audit chosen CSV files (Pro) command now shows a notice with a Sponsor on GitHub button for free users."
+	],
+	"tip": "Turn on Retain strict negative numbers to keep values such as -12 and -0.5.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. CSV Formula Shield is one of over 100 small plugins that I make. Thank you for trusting it with your tables.",
+	"related": [
+		{
+			"id": "table-rollup",
+			"name": "Table Rollup",
+			"blurb": "Combine note tables in one table with links to the source notes."
+		},
+		{
+			"id": "csv-schema-linter",
+			"name": "CSV Rule Check",
+			"blurb": "Check CSV columns against local rules and show errors by row and column."
+		},
+		{
+			"id": "table-csv-encoding",
+			"name": "Table CSV Encoding",
+			"blurb": "Export Markdown tables to UTF-8 CSV files with a preview."
+		}
+	]
+}

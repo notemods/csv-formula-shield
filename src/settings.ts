@@ -3,6 +3,7 @@ import { sponsorsSettingItems } from './license/github-obsidian';
 import { PRO_UI } from './pro';
 import type CsvFormulaShieldPlugin from './main';
 import type { Policy } from './csv';
+import { helloSettingItems } from './hello/settings';
 
 export interface ShieldSettings extends Policy { policies: Record<string, Policy> }
 export const DEFAULT_SETTINGS: ShieldSettings = { retainNegativeNumbers: false, policies: {} };
@@ -24,6 +25,11 @@ export class ShieldSettingTab extends PluginSettingTab {
 	constructor(private owner: CsvFormulaShieldPlugin) { super(owner.app, owner); }
 
 	getSettingDefinitions(): SettingDefinitionItem[] {
+		// The product rows, then the "More from NoteMods" card (packages/hello).
+		return [...this.productSettingDefinitions(), ...helloSettingItems()];
+	}
+
+	productSettingDefinitions(): SettingDefinitionItem[] {
 		return [
 			{ name: 'Retain strict negative numbers', desc: 'Default for a new preview. Off escapes -12. On retains decimal numbers such as -12, -0.5 and -2e3.', control: { type: 'toggle', key: 'retainNegativeNumbers', defaultValue: false } },
 			...(this.owner.pro ? sponsorsSettingItems(this.owner.pro, PRO_UI) : []),
