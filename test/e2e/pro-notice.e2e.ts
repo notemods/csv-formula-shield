@@ -2,7 +2,7 @@ import { browser, expect } from '@wdio/globals';
 import { pluginId } from './load';
 
 // A free user runs the Pro command "Audit chosen CSV files (Pro)". The shared Pro notice must show, with a
-// Sponsor on GitHub button that opens the Sponsors page with metadata_source=<plugin id>. No audit dialog opens.
+// Sponsor on GitHub button that opens the one-time tab of the Sponsors page with metadata_source=<plugin id>. No audit dialog opens.
 const LEAD = 'Combined audit reports and saved export policies are Pro features.';
 const PITCH = 'Sponsor on GitHub, then sign in from the plugin settings.';
 
@@ -33,7 +33,7 @@ describe(`${pluginId} Pro notice`, function () {
 			try { (w.activeWindow.document.querySelector('.notice .pf-pro-notice-sponsor') as HTMLElement).click(); } finally { w.open = original; }
 			return opened;
 		});
-		expect(url).toBe(`https://github.com/sponsors/theluckystrike?metadata_source=${pluginId}`);
+		expect(url).toBe(`https://github.com/sponsors/theluckystrike?frequency=one-time&metadata_source=${pluginId}`);
 		// The free user gets no audit dialog.
 		expect(await browser.execute(() => document.querySelector('.csv-shield-modal'))).toBeNull();
 	});

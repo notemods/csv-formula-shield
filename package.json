@@ -1,6 +1,6 @@
 {
 	"name": "csv-formula-shield",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"private": true,
 	"description": "Find formula prefixes in CSV cells and write a separate escaped copy.",
 	"main": "main.js",

@@ -1,9 +1,9 @@
 {
 	"id": "csv-formula-shield",
 	"name": "CSV Formula Shield",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"changes": [
-		"The Audit chosen CSV files (Pro) command now shows a notice with a Sponsor on GitHub button for free users."
+		"The Sponsor on GitHub button now opens the one-time payment tab of GitHub Sponsors."
 	],
 	"tip": "Turn on Retain strict negative numbers to keep values such as -12 and -0.5.",
 	"thanks": "Hi, I am Michael, a solo developer in Poland. CSV Formula Shield is one of over 100 small plugins that I make. Thank you for trusting it with your tables.",
